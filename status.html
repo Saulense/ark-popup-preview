@@ -4,227 +4,329 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>ARK Popups — Status &amp; Rules</title>
+<title>ARK Popups — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0C1512;--card:#122019;--line:#24382F;--ink:#F2F6F2;--mut:#9DB3A8;--gold:#F5B640;--gold2:#F5C664;--green:#0B5F4F;--mint:#61E1C5}
+:root{
+  --canvas:#F7F8FA; --surface:#FFFFFF; --line:#E5E8EC; --line2:#EEF1F4;
+  --ink:#101828; --mut:#667085; --soft:#98A2B3;
+  --green:#0B5F4F; --green-bg:#EAF4F1; --ok:#12B76A; --ok-bg:#ECFDF3;
+  --amber:#B54708; --amber-bg:#FFFAEB; --gold:#C79A4B;
+  --r:12px; --sh:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.05);
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:var(--gold2)}
-.wrap{max-width:880px;margin:0 auto;padding:34px 18px 80px}
-header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px}
-.flame{width:40px;height:40px;border-radius:12px;background:linear-gradient(160deg,#0B5F4F,#07443A);display:flex;align-items:center;justify-content:center;border:1px solid rgba(245,182,64,.45)}
-.flame svg{width:20px;height:20px}
-h1{font:700 26px/1.1 Oswald,sans-serif;letter-spacing:.5px;text-transform:uppercase}
-.sub{color:var(--mut);font-size:13px;margin-top:2px}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 6px}
-.badge{font:600 11px/1 Inter,sans-serif;letter-spacing:.6px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
-.badge.hot{background:rgba(245,182,64,.12);border-color:rgba(245,182,64,.5);color:var(--gold2)}
-.badge.ok{background:rgba(97,225,197,.08);border-color:rgba(97,225,197,.4);color:var(--mint)}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
-@media (max-width:700px){.grid{grid-template-columns:1fr}}
-.pop{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;position:relative;overflow:hidden}
-.pop:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--gold),transparent)}
-.pop .tag{font:700 10px/1 Inter,sans-serif;letter-spacing:1.6px;color:var(--gold2)}
-.pop h2{font:700 22px/1.1 Oswald,sans-serif;letter-spacing:.4px;text-transform:uppercase;margin:8px 0 6px}
-.pop p{color:var(--mut);font-size:13px}
-.pop .where{margin-top:12px;font-size:12.5px;color:var(--ink)}
-.pop .where b{color:var(--gold2)}
-.steps{display:flex;gap:6px;align-items:center;margin-top:12px;font:600 11px/1 Inter,sans-serif;color:var(--mut);flex-wrap:wrap}
-.steps span{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:999px;padding:6px 10px}
-.steps i{font-style:normal;color:var(--gold)}
-section{margin-top:26px}
-h3{font:700 16px/1.2 Oswald,sans-serif;letter-spacing:.8px;text-transform:uppercase;color:var(--gold2);margin-bottom:10px}
-details{background:var(--card);border:1px solid var(--line);border-radius:13px;margin-bottom:8px;overflow:hidden}
-summary{cursor:pointer;padding:14px 16px;font-weight:600;font-size:13.5px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
-summary::after{content:"+";color:var(--gold);font-weight:700;font-size:16px}
-details[open] summary::after{content:"–"}
-.dbody{padding:0 16px 15px;color:var(--mut);font-size:13px}
-.dbody b{color:var(--ink)}
-.dbody ul{margin:6px 0 0 18px}
-.dbody li{margin-bottom:5px}
-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
-th{text-align:left;color:var(--gold2);font:600 10.5px/1.4 Inter,sans-serif;letter-spacing:.8px;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--line)}
-td{padding:9px 10px;border-bottom:1px solid rgba(36,56,47,.6);color:var(--ink)}
+html,body{height:100%}
+body{background:var(--canvas);color:var(--ink);font:14px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.app{display:flex;min-height:100dvh}
+/* ---------- sidebar ---------- */
+.side{flex:0 0 230px;background:var(--surface);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100dvh}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 10px 16px}
+.brand .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(160deg,#0B5F4F,#07443A);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.brand .mark svg{width:17px;height:17px}
+.brand b{font-size:14.5px;font-weight:700;letter-spacing:.1px}
+.brand span{display:block;font-size:11px;color:var(--mut);font-weight:500}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;color:var(--mut);font:500 13.5px/1 Inter,sans-serif;padding:10px 12px;border-radius:9px;cursor:pointer}
+.nav button svg{width:16px;height:16px;flex:0 0 auto}
+.nav button:hover{background:var(--line2);color:var(--ink)}
+.nav button.on{background:var(--green-bg);color:var(--green);font-weight:600}
+.side .foot{margin-top:auto;padding:10px 12px;font-size:11px;color:var(--soft);line-height:1.5}
+
+/* ---------- main ---------- */
+.main{flex:1 1 auto;min-width:0;padding:26px 28px 60px;max-width:1060px}
+.pagehead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pagehead h1{font-size:19px;font-weight:700;letter-spacing:-.2px}
+.pagehead .sub{color:var(--mut);font-size:12.5px;margin-top:3px}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 11.5px/1 Inter,sans-serif;padding:6px 11px;border-radius:999px;white-space:nowrap}
+.pill .dot{width:7px;height:7px;border-radius:50%}
+.pill.live{background:var(--ok-bg);color:#067647}.pill.live .dot{background:var(--ok)}
+.pill.test{background:var(--amber-bg);color:var(--amber)}.pill.test .dot{background:#F79009}
+.pill.idle{background:var(--line2);color:var(--mut)}.pill.idle .dot{background:var(--soft)}
+
+.view{display:none}
+.view.on{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:14px}
+.card .hd{padding:14px 18px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card .hd h2{font-size:14px;font-weight:600}
+.card .hd .note{font-size:11.5px;color:var(--mut)}
+.card .bd{padding:16px 18px}
+.card .bd.tight{padding:0}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px}
+.stat .l{font-size:11.5px;font-weight:500;color:var(--mut)}
+.stat .v{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-top:4px;font-variant-numeric:tabular-nums}
+.stat .s{font-size:11px;color:var(--soft);margin-top:3px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font:600 11px/1.4 Inter,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:var(--mut);padding:10px 18px;border-bottom:1px solid var(--line2);white-space:nowrap}
+td{padding:12px 18px;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums;vertical-align:middle}
+tr:last-child td{border-bottom:0}
 td.m{color:var(--mut)}
-.note{font-size:12px;color:var(--mut);margin-top:8px}
-.cta{display:inline-block;margin-top:8px;background:#fff;color:#0B3D33;font:700 12px/1 Inter,sans-serif;letter-spacing:.6px;padding:12px 18px;border-radius:999px;text-decoration:none}
-footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:var(--mut);font-size:11.5px}
+.twrap{overflow-x:auto}
+
+.plist{list-style:none}
+.plist li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13px;color:#344054}
+.plist li:last-child{border-bottom:0}
+.plist .ic{flex:0 0 auto;width:18px;height:18px;border-radius:6px;background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font:600 11px/1 Inter,sans-serif;background:var(--line2);color:#344054;border-radius:999px;padding:6px 10px;white-space:nowrap}
+.chip.g{background:var(--green-bg);color:var(--green)}
+.arrow{color:var(--soft);font-size:11px}
+
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;font:600 12.5px/1 Inter,sans-serif;padding:10px 16px;border-radius:9px;border:0;cursor:pointer}
+.btn:hover{background:#0A5245;text-decoration:none}
+
+.check{list-style:none}
+.check li{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13px}
+.check li:last-child{border-bottom:0}
+.check .st{flex:0 0 auto;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px}
+.check .done{background:var(--ok-bg);color:#067647}
+.check .todo{background:var(--line2);color:var(--soft)}
+.check b{font-weight:600}
+.check .d{color:var(--mut);font-size:12px;margin-top:2px}
+
+/* ---------- mobile ---------- */
+@media (max-width:880px){
+  .app{flex-direction:column}
+  .side{position:sticky;top:0;z-index:20;height:auto;flex:0 0 auto;flex-direction:column;padding:12px 14px 0;border-right:0;border-bottom:1px solid var(--line)}
+  .brand{padding:2px 2px 10px}
+  .nav{flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{white-space:nowrap;padding:9px 13px}
+  .side .foot{display:none}
+  .main{padding:18px 14px 48px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  th,td{padding-left:14px;padding-right:14px}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="flame"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C10 7 6 8.5 6 13.5A6 6 0 0 0 18 13.5C18 8.5 14 7 12 2Z" fill="#F5B640"/><path d="M12 9c-1 2.4-3 3.1-3 5.4a3 3 0 0 0 6 0C15 12.1 13 11.4 12 9Z" fill="#0B5F4F"/></svg></div>
-    <div>
-      <h1>ARK Popups — Status &amp; Rules</h1>
-      <div class="sub">The single page for everything about ARK of Sweden's on-site popups. Always current.</div>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2C10 7 6 8.5 6 13.5A6 6 0 0 0 18 13.5C18 8.5 14 7 12 2Z" fill="#F5B640"/><path d="M12 9c-1 2.4-3 3.1-3 5.4a3 3 0 0 0 6 0C15 12.1 13 11.4 12 9Z" fill="#0B5F4F"/></svg></div>
+      <div><b>ARK Popups</b><span>Dashboard</span></div>
     </div>
-  </header>
+    <nav class="nav" id="nav">
+      <button data-v="dash" class="on"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg>Dashboard</button>
+      <button data-v="pop"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14"/></svg>Popups &amp; rules</button>
+      <button data-v="klav"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h14v10H3z"/><path d="m3 6 7 5 7-5"/></svg>Klaviyo</button>
+      <button data-v="launch"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3v10"/><path d="m6 9 4 4 4-4"/><path d="M4 17h12"/></svg>Launch plan</button>
+    </nav>
+    <div class="foot">Internal — ARK of Sweden.<br>Rules text updates with every popup change; numbers load live.</div>
+  </aside>
 
-  <div class="badges">
-    <span class="badge hot">STATUS: TESTING (not live yet)</span>
-    <span class="badge ok">KLAVIYO FLOWS: UNCHANGED</span>
-    <span class="badge">Updated 2026-08-22 · build v2</span>
-  </div>
-  <p class="note">Right now the store still runs the 3 Klaviyo forms. The new popups below are installed on a
-  hidden test copy of the theme. Switch-over happens only after testing passes. Emails &amp; SMS keep coming
-  from the existing Klaviyo Welcome Flow — nothing changes on the flow side, ever.</p>
+  <main class="main">
 
-  <div class="grid">
-    <div class="pop">
-      <span class="tag">POPUP 1</span>
-      <h2>ARK Melts — 10% Off</h2>
-      <p>The product popup for the Melts family. Gold-ring design, photo side, small "GET 10% OFF" teaser tab after closing.</p>
-      <div class="where">Shows <b>only</b> on: Extra Strong · Melts Original · NeuroFuel Kit · /pages/ark-melts</div>
-      <div class="steps"><span>Email <i>10%</i></span>→<span>Phone <i>15%</i> (optional)</span>→<span>Success</span></div>
-    </div>
-    <div class="pop">
-      <span class="tag">POPUP 2</span>
-      <h2>Leaving Already?</h2>
-      <p>The exit popup. Benefit rows, phone step for an extra 5%, travel-kit success photo. No teaser — it only appears on a real exit.</p>
-      <div class="where">Shows everywhere <b>except</b> the 4 Melts pages, cart, checkout, ad landing pages</div>
-      <div class="steps"><span>Email <i>10%</i></span>→<span>Phone <i>+5%</i> (optional)</span>→<span>Success</span></div>
-    </div>
-  </div>
-  <a class="cta" href="https://saulense.github.io/ark-popup-preview/" target="_blank" rel="noopener">See the designs live →</a>
+    <!-- ================= DASHBOARD ================= -->
+    <section class="view on" id="v-dash">
+      <div class="pagehead">
+        <div>
+          <h1>Popup performance</h1>
+          <div class="sub">Counts real store visitors only — test activity excluded.</div>
+        </div>
+        <span class="pill idle" id="liveBadge"><span class="dot"></span><span id="liveBadgeTxt">Connecting…</span></span>
+      </div>
 
-  <section>
-    <h3>When each popup appears</h3>
-    <details open>
-      <summary>Popup 1 — ARK Melts (product pages)</summary>
-      <div class="dbody">
-        Opens only for engaged visitors:
-        <ul>
-          <li><b>Phone:</b> after at least <b>5 seconds</b> on the page <b>and</b> scrolling about <b>a third down</b> — someone actually reading the product.</li>
-          <li><b>Computer:</b> same thresholds, then it waits for the mouse to head up to leave the page.</li>
-          <li>An alternative <b>"Exit only"</b> mode exists as a setting (never shows during reading), switchable without code.</li>
-          <li>The small <b>teaser tab</b> is never on the page at arrival. It appears only after someone closes the popup. Closing the teaser hides it for that visit. Clicking it always opens the popup.</li>
-        </ul>
+      <div class="stats" id="statCards">
+        <div class="stat"><div class="l">Unique views</div><div class="v" id="stViews">—</div><div class="s">both popups, total</div></div>
+        <div class="stat"><div class="l">Signups</div><div class="v" id="stSign">—</div><div class="s">accepted by Klaviyo</div></div>
+        <div class="stat"><div class="l">Conversion</div><div class="v" id="stRate">—</div><div class="s">signups ÷ views</div></div>
+        <div class="stat"><div class="l">Last 7 days</div><div class="v" id="st7">—</div><div class="s">views · signups</div></div>
       </div>
-    </details>
-    <details>
-      <summary>Popup 2 — Leaving Already? (rest of the site)</summary>
-      <div class="dbody">
-        Opens only on real leaving behavior — never on a timer:
-        <ul>
-          <li>Visitor has seen <b>3+ pages</b> and spent <b>45+ seconds</b> actually viewing the site (background tabs don't count),</li>
-          <li>and then makes a genuine exit move: mouse shooting to the top edge (desktop) or a long fast upward scroll (mobile). A casual small scroll-up doesn't trigger it.</li>
-          <li>Never on: the 4 Melts pages, cart, checkout, ad landing pages, policy pages.</li>
-        </ul>
-      </div>
-    </details>
-    <details>
-      <summary>Politeness rules (why nobody gets annoyed)</summary>
-      <div class="dbody">
-        <ul>
-          <li>Maximum <b>one popup per visit</b>, across the whole store.</li>
-          <li>Close one popup → no other popup that visit (at most the small teaser on Melts pages).</li>
-          <li>Closed it? The Melts popup rests <b>7 days</b>, the Leaving popup <b>30 days</b>.</li>
-          <li><b>Signed up = never sees any popup or teaser again</b> (shared across both popups).</li>
-          <li>Nothing ever interrupts cart or checkout.</li>
-        </ul>
-      </div>
-    </details>
-  </section>
 
-  <section>
-    <h3>Klaviyo connection (for the email team)</h3>
-    <details open>
-      <summary>What happens when someone signs up</summary>
-      <div class="dbody">
-        <ul>
-          <li>The popup adds the person to the <b>Newsletter</b> list — the same list as today. The existing <b>PMA | Welcome Flow</b> fires unchanged (Email #1 with WELCOME10, the extra-5% SMS series, everything).</li>
-          <li>The email and the phone number are submitted <b>together at the end</b> of the popup journey — so SMS consent exists <i>before</i> the flow starts. (Today's forms submit the email first, which can make the flow skip SMS #1.)</li>
-          <li>Typing an email is <b>not</b> consent — nothing is sent until the person clicks Continue and finishes. The success screen only appears after Klaviyo confirms receipt.</li>
-          <li>Every profile is tagged: <b>custom_source</b> ("ARK Popup - Product" / "ARK Popup - Exit") and a property <b>popup_signup_source</b> with the exact page. The email team can branch flow content on these anytime — no changes needed from the popup side.</li>
-        </ul>
+      <div class="card">
+        <div class="hd"><h2>Per popup</h2><span class="note" id="liveUpdated"></span></div>
+        <div class="bd tight twrap">
+          <table>
+            <thead><tr><th>Popup</th><th>Unique views</th><th>Signups</th><th>Rate</th><th>Last 7 days</th></tr></thead>
+            <tbody id="liveRows"><tr><td colspan="5" class="m">Connecting to the live counter…</td></tr></tbody>
+          </table>
+        </div>
       </div>
-    </details>
-  </section>
 
-  <section>
-    <h3>Performance</h3>
-    <details open>
-      <summary>Live numbers — the new popups <span id="arkpLiveBadge" style="font-size:10px;letter-spacing:1px;color:var(--mint)"></span></summary>
-      <div class="dbody">
-        <table>
-          <thead><tr><th>Popup</th><th>Unique views</th><th>Signups</th><th>Rate</th><th>Last 7 days</th></tr></thead>
-          <tbody id="arkpLiveRows"><tr><td colspan="5" class="m">Connecting to the live counter…</td></tr></tbody>
-        </table>
-        <p class="note" id="arkpLiveNote">Counts real store visitors only — test-mode activity is excluded. Sales attribution joins this table before launch (reconciliation step).</p>
+      <div class="card">
+        <div class="hd"><h2>Baseline — old Klaviyo forms being replaced</h2><span class="note">snapshot 2026-08-22</span></div>
+        <div class="bd tight twrap">
+          <table>
+            <thead><tr><th>Form</th><th>Submitted</th><th>Rate</th><th>Revenue</th></tr></thead>
+            <tbody>
+              <tr><td>EXIT POP-UP (Mobile)</td><td>818</td><td>4.5%</td><td>€6K</td></tr>
+              <tr><td>Ark Melts Extra Strong</td><td>26</td><td>10.2%</td><td>€345</td></tr>
+              <tr><td>EXIT POP-UP (Desktop)</td><td>41</td><td>4.0%</td><td>€402</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </details>
-    <details open>
-      <summary>Baseline — the Klaviyo forms being replaced (snapshot 2026-08-22)</summary>
-      <div class="dbody">
-        <table>
-          <tr><th>Form</th><th>Submitted</th><th>Rate</th><th>Revenue</th></tr>
-          <tr><td>EXIT POP-UP (Mobile)</td><td>818</td><td>4.5%</td><td>€6K</td></tr>
-          <tr><td>Ark Melts Extra Strong</td><td>26</td><td>10.2%</td><td>€345</td></tr>
-          <tr><td>EXIT POP-UP (Desktop)</td><td>41</td><td>4.0%</td><td>€402</td></tr>
-        </table>
-        <p class="note">These are the "before" numbers. After launch, the new popups report views, signups,
-        conversion and code-redemption revenue per popup / device / market — that live view connects here
-        once the tracking collector goes live (a required step before any switch-over).</p>
-      </div>
-    </details>
-  </section>
+      <p style="font-size:12px;color:var(--mut)">Sales attribution (which orders came from the popups) joins this dashboard before launch — it is a required step on the launch plan.</p>
+    </section>
 
-  <section>
-    <h3>Process</h3>
-    <details>
-      <summary>How changes are made</summary>
-      <div class="dbody">
-        <ul>
-          <li>Everyday text/toggle changes: Saul edits them directly in the Shopify Theme Editor (ARK Popups section — switches, texts, trigger mode, cooldowns, page lists).</li>
-          <li>Design or behavior changes: requested through Saul → built by Claude → independently reviewed by Codex → tested on the hidden theme → only then released.</li>
-          <li>This page is part of the workflow: it is updated after <b>every</b> popup change, so it always shows the current truth.</li>
-        </ul>
+    <!-- ================= POPUPS & RULES ================= -->
+    <section class="view" id="v-pop">
+      <div class="pagehead">
+        <div><h1>Popups &amp; rules</h1><div class="sub">What shows where, and why nobody gets annoyed.</div></div>
+        <a class="btn" href="https://saulense.github.io/ark-popup-preview/" target="_blank" rel="noopener">Open live designs</a>
       </div>
-    </details>
-    <details>
-      <summary>Launch checklist (where we are)</summary>
-      <div class="dbody">
-        <ul>
-          <li>✅ Designs approved &amp; built into the test theme</li>
-          <li>✅ Independent review of the plan (5 rounds) + install verification pack</li>
-          <li>✅ Independent 20-point installation audit → all findings repaired (build v2: all 9 languages, full country list, accessibility, consent texts visible)</li>
-          <li>⏳ Owner visual review on the test theme</li>
-          <li>⏳ Controlled end-to-end signup test (proves emails + SMS deliver correctly)</li>
-          <li>⏳ Performance tracking live</li>
-          <li>⏳ Switch-over: old Klaviyo forms off, new popups on — fully reversible</li>
-        </ul>
-      </div>
-    </details>
-  </section>
 
-  <footer>ARK of Sweden — internal popup documentation. Rules text is refreshed with every popup change; the performance numbers above load live from the ARK counter each time you open this page. Not indexed.</footer>
+      <div class="card">
+        <div class="hd"><h2>Popup 1 — ARK Melts (10% off)</h2><span class="pill test"><span class="dot"></span>Testing</span></div>
+        <div class="bd">
+          <div class="chips" style="margin-bottom:10px">
+            <span class="chip g">Email · 10%</span><span class="arrow">→</span>
+            <span class="chip g">Phone · 15% (optional)</span><span class="arrow">→</span>
+            <span class="chip g">Success</span>
+          </div>
+          <ul class="plist">
+            <li><span class="ic">◎</span><span>Shows <b>only</b> on 4 pages: Melts Extra Strong, Melts Original, NeuroFuel Kit, and the ark-melts landing page.</span></li>
+            <li><span class="ic">◷</span><span>Never instantly: on phones it waits for <b>5 seconds + a third of the page scrolled</b>; on computers additionally for a real exit movement. An "Exit only" mode exists as a switch.</span></li>
+            <li><span class="ic">▸</span><span>The small "GET 10% OFF" teaser tab is <b>not</b> on the page at arrival — it appears only after someone closes the popup. Closing the teaser hides it for that visit. Clicking it always opens the popup.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Popup 2 — Leaving Already?</h2><span class="pill test"><span class="dot"></span>Testing</span></div>
+        <div class="bd">
+          <div class="chips" style="margin-bottom:10px">
+            <span class="chip g">Email · 10%</span><span class="arrow">→</span>
+            <span class="chip g">Phone · +5% (optional)</span><span class="arrow">→</span>
+            <span class="chip g">Success</span>
+          </div>
+          <ul class="plist">
+            <li><span class="ic">◎</span><span>Shows everywhere <b>except</b> the 4 Melts pages, cart, checkout, ad landing pages and policy pages.</span></li>
+            <li><span class="ic">◷</span><span>Opens only on real leaving behavior: <b>3+ pages viewed, 45+ seconds</b> of actual on-screen time, then a genuine exit move (mouse to top edge on desktop / long fast scroll-up on mobile). Never a timer. No teaser, ever.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Politeness rules</h2></div>
+        <div class="bd">
+          <ul class="plist">
+            <li><span class="ic">1</span><span>Maximum <b>one popup per visit</b> across the whole store.</span></li>
+            <li><span class="ic">2</span><span>Close one popup → <b>no other popup that visit</b> (at most the teaser on Melts pages).</span></li>
+            <li><span class="ic">3</span><span>Closed = quiet for <b>7 days</b> (Melts popup) / <b>30 days</b> (Leaving popup).</span></li>
+            <li><span class="ic">4</span><span><b>Signed up = never sees any popup or teaser again</b> — shared across both popups.</span></li>
+            <li><span class="ic">5</span><span>Cart and checkout are sacred — nothing ever interrupts a purchase.</span></li>
+            <li><span class="ic">6</span><span>All 9 store languages supported; phone country pre-selected per market.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= KLAVIYO ================= -->
+    <section class="view" id="v-klav">
+      <div class="pagehead">
+        <div><h1>Klaviyo connection</h1><div class="sub">For the email team — what changes and what doesn't.</div></div>
+        <span class="pill live"><span class="dot"></span>Flows untouched</span>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>What happens on signup</h2></div>
+        <div class="bd">
+          <div class="chips" style="margin-bottom:12px">
+            <span class="chip">Popup</span><span class="arrow">→</span>
+            <span class="chip">Newsletter list</span><span class="arrow">→</span>
+            <span class="chip g">PMA | Welcome Flow</span><span class="arrow">→</span>
+            <span class="chip">WELCOME10 email + 5% SMS series</span>
+          </div>
+          <ul class="plist">
+            <li><span class="ic">✓</span><span>The popups add people to the <b>same Newsletter list</b> as today. Every flow, email and SMS continues exactly as it is — nothing is rebuilt.</span></li>
+            <li><span class="ic">✓</span><span>Email + phone are submitted <b>together at the end</b> of the journey, so SMS consent exists <b>before</b> the flow starts (today's forms submit email first, which can make the flow skip SMS #1).</span></li>
+            <li><span class="ic">✓</span><span>Typing an email is not consent — nothing is sent until the visitor clicks Continue and finishes. Success appears only after Klaviyo confirms receipt.</span></li>
+            <li><span class="ic">✓</span><span>Every profile is tagged with <b>custom_source</b> ("ARK Popup - Product" / "ARK Popup - Exit") and <b>popup_signup_source</b> (exact page) — the email team can branch flow content on these anytime, without any change on the popup side.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>At switch-over (later, owner-approved)</h2></div>
+        <div class="bd">
+          <ul class="plist">
+            <li><span class="ic">1</span><span>The 3 old Klaviyo sign-up forms get unpublished — <b>forms only</b>; flows and tracking stay.</span></li>
+            <li><span class="ic">2</span><span>Klaviyo's site tracking remains active (Browse / Site Abandonment flows depend on it).</span></li>
+            <li><span class="ic">3</span><span>Fully reversible: re-publish the old forms anytime.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LAUNCH ================= -->
+    <section class="view" id="v-launch">
+      <div class="pagehead">
+        <div><h1>Launch plan</h1><div class="sub">Where we are on the way to switching over.</div></div>
+        <span class="pill test"><span class="dot"></span>In testing</span>
+      </div>
+      <div class="card">
+        <div class="bd">
+          <ul class="check">
+            <li><span class="st done">✓</span><div><b>Designs approved &amp; built</b><div class="d">Both popups installed on a hidden test copy of the theme — live store untouched.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Independent plan review</b><div class="d">5 review rounds passed before building.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Independent installation audit</b><div class="d">20 findings — all repaired in build v2 (languages, accessibility, consent texts, full country list).</div></div></li>
+            <li><span class="st done">✓</span><div><b>Live counter connected</b><div class="d">Views and signups are recorded automatically; this dashboard reads them live.</div></div></li>
+            <li><span class="st todo">…</span><div><b>Owner visual review</b><div class="d">Saul checks both popups on phone + desktop; approves consent wording.</div></div></li>
+            <li><span class="st todo">…</span><div><b>End-to-end signup test</b><div class="d">Real test profiles prove emails + SMS deliver correctly, incl. SMS #1 timing.</div></div></li>
+            <li><span class="st todo">…</span><div><b>Sales attribution</b><div class="d">Orders matched to popup signups — joins the dashboard before launch.</div></div></li>
+            <li><span class="st todo">…</span><div><b>Switch-over</b><div class="d">Old Klaviyo forms off, new popups on. Reversible in one click.</div></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
 </div>
 
 <script>
 (function(){
+  /* ---- side navigation ---- */
+  var nav=document.getElementById('nav');
+  function show(v){
+    document.querySelectorAll('.view').forEach(function(s){ s.classList.toggle('on', s.id==='v-'+v); });
+    nav.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); });
+    try{ history.replaceState(null,'','#'+v); }catch(e){}
+    window.scrollTo(0,0);
+  }
+  nav.addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(b) show(b.dataset.v);
+  });
+  var h=(location.hash||'').replace('#','');
+  if(['dash','pop','klav','launch'].indexOf(h)>=0) show(h);
+
+  /* ---- live numbers ---- */
   var U="https://dekqaraectuuidezwibq.supabase.co", K="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRla3FhcmFlY3R1dWlkZXp3aWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Mzc4MjIsImV4cCI6MjA5NTUxMzgyMn0.iC48SPtxWsM7KQsuVB9-oRE252cCwHhg6Vl9LWrQbkI";
   var names={p1:"ARK Melts popup",p2:"Leaving popup"};
+  var badge=document.getElementById('liveBadge'), btxt=document.getElementById('liveBadgeTxt');
   fetch(U+"/rest/v1/rpc/popup_stats",{method:"POST",headers:{"apikey":K,"Authorization":"Bearer "+K,"Content-Type":"application/json"},body:"{}"})
   .then(function(r){ if(!r.ok) throw 0; return r.json(); })
   .then(function(d){
-    var rows=document.getElementById("arkpLiveRows"), badge=document.getElementById("arkpLiveBadge");
+    badge.className='pill live'; btxt.textContent='LIVE';
     var t=new Date(d.updated_at);
-    badge.textContent="● LIVE · "+t.toLocaleString(undefined,{hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"});
+    document.getElementById('liveUpdated').textContent='checked '+t.toLocaleString(undefined,{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
     var ps=d.popups||[];
+    var rows=document.getElementById('liveRows');
     if(!ps.length){
-      rows.innerHTML='<tr><td colspan="5" class="m">Counter connected ✓ — no production signups yet (the new popups are still in testing mode; numbers start the moment they go live).</td></tr>';
+      rows.innerHTML='<tr><td colspan="5" class="m">Counter connected — no production signups yet. The popups are in testing mode; numbers start the moment they go live.</td></tr>';
       return;
     }
+    var tv=0,ta=0,t7v=0,t7a=0;
     rows.innerHTML=ps.map(function(p){
-      var rate=p.views>0?((100*p.accepted/p.views).toFixed(1)+"%"):"—";
-      return "<tr><td>"+(names[p.popup]||p.popup)+"</td><td>"+p.views+"</td><td>"+p.accepted+"</td><td>"+rate+"</td><td>"+p.views_7d+" views · "+p.accepted_7d+" signups</td></tr>";
-    }).join("");
+      tv+=p.views; ta+=p.accepted; t7v+=p.views_7d; t7a+=p.accepted_7d;
+      var rate=p.views>0?((100*p.accepted/p.views).toFixed(1)+'%'):'—';
+      return '<tr><td>'+(names[p.popup]||p.popup)+'</td><td>'+p.views+'</td><td>'+p.accepted+'</td><td>'+rate+'</td><td class="m">'+p.views_7d+' · '+p.accepted_7d+'</td></tr>';
+    }).join('');
+    document.getElementById('stViews').textContent=tv;
+    document.getElementById('stSign').textContent=ta;
+    document.getElementById('stRate').textContent=tv>0?((100*ta/tv).toFixed(1)+'%'):'—';
+    document.getElementById('st7').textContent=t7v+' · '+t7a;
   })
   .catch(function(){
-    document.getElementById("arkpLiveRows").innerHTML='<tr><td colspan="5" class="m">Live counter unreachable right now — try refreshing.</td></tr>';
+    badge.className='pill idle'; btxt.textContent='Counter unreachable';
+    document.getElementById('liveRows').innerHTML='<tr><td colspan="5" class="m">Live counter unreachable right now — try refreshing.</td></tr>';
   });
 })();
 </script>
