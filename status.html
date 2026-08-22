@@ -147,6 +147,16 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:v
   <section>
     <h3>Performance</h3>
     <details open>
+      <summary>Live numbers — the new popups <span id="arkpLiveBadge" style="font-size:10px;letter-spacing:1px;color:var(--mint)"></span></summary>
+      <div class="dbody">
+        <table>
+          <thead><tr><th>Popup</th><th>Unique views</th><th>Signups</th><th>Rate</th><th>Last 7 days</th></tr></thead>
+          <tbody id="arkpLiveRows"><tr><td colspan="5" class="m">Connecting to the live counter…</td></tr></tbody>
+        </table>
+        <p class="note" id="arkpLiveNote">Counts real store visitors only — test-mode activity is excluded. Sales attribution joins this table before launch (reconciliation step).</p>
+      </div>
+    </details>
+    <details open>
       <summary>Baseline — the Klaviyo forms being replaced (snapshot 2026-08-22)</summary>
       <div class="dbody">
         <table>
@@ -190,7 +200,33 @@ footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--line);color:v
     </details>
   </section>
 
-  <footer>ARK of Sweden — internal popup documentation. Auto-maintained: this page is refreshed after every popup change. Not indexed.</footer>
+  <footer>ARK of Sweden — internal popup documentation. Rules text is refreshed with every popup change; the performance numbers above load live from the ARK counter each time you open this page. Not indexed.</footer>
 </div>
+
+<script>
+(function(){
+  var U="https://dekqaraectuuidezwibq.supabase.co", K="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRla3FhcmFlY3R1dWlkZXp3aWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Mzc4MjIsImV4cCI6MjA5NTUxMzgyMn0.iC48SPtxWsM7KQsuVB9-oRE252cCwHhg6Vl9LWrQbkI";
+  var names={p1:"ARK Melts popup",p2:"Leaving popup"};
+  fetch(U+"/rest/v1/rpc/popup_stats",{method:"POST",headers:{"apikey":K,"Authorization":"Bearer "+K,"Content-Type":"application/json"},body:"{}"})
+  .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+  .then(function(d){
+    var rows=document.getElementById("arkpLiveRows"), badge=document.getElementById("arkpLiveBadge");
+    var t=new Date(d.updated_at);
+    badge.textContent="● LIVE · "+t.toLocaleString(undefined,{hour:"2-digit",minute:"2-digit",day:"numeric",month:"short"});
+    var ps=d.popups||[];
+    if(!ps.length){
+      rows.innerHTML='<tr><td colspan="5" class="m">Counter connected ✓ — no production signups yet (the new popups are still in testing mode; numbers start the moment they go live).</td></tr>';
+      return;
+    }
+    rows.innerHTML=ps.map(function(p){
+      var rate=p.views>0?((100*p.accepted/p.views).toFixed(1)+"%"):"—";
+      return "<tr><td>"+(names[p.popup]||p.popup)+"</td><td>"+p.views+"</td><td>"+p.accepted+"</td><td>"+rate+"</td><td>"+p.views_7d+" views · "+p.accepted_7d+" signups</td></tr>";
+    }).join("");
+  })
+  .catch(function(){
+    document.getElementById("arkpLiveRows").innerHTML='<tr><td colspan="5" class="m">Live counter unreachable right now — try refreshing.</td></tr>';
+  });
+})();
+</script>
 </body>
 </html>
