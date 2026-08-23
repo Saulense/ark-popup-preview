@@ -159,23 +159,23 @@ body.locked .app{display:none}
       <div class="pagehead">
         <div>
           <h1>Popup performance</h1>
-          <div class="sub">Deduplicated per visitor session · test activity excluded · client telemetry (authoritative signups live in Klaviyo). Abuse protection uses short-lived pseudonymous network fingerprints, auto-deleted within ~2 days.</div>
+          <div class="sub">Deduplicated per visitor session · test activity excluded · accepted-request telemetry only (confirmed subscriptions remain authoritative in Klaviyo). Abuse protection uses short-lived pseudonymous network fingerprints, auto-deleted within ~2 days.</div>
         </div>
         <span class="pill idle" id="liveBadge"><span class="dot"></span><span id="liveBadgeTxt">Connecting…</span></span>
       </div>
 
       <div class="stats" id="statCards">
         <div class="stat"><div class="l">Unique views</div><div class="v" id="stViews">—</div><div class="s">both popups, total</div></div>
-        <div class="stat"><div class="l">Signups</div><div class="v" id="stSign">—</div><div class="s">accepted by Klaviyo</div></div>
-        <div class="stat"><div class="l">Conversion</div><div class="v" id="stRate">—</div><div class="s">signups ÷ views</div></div>
-        <div class="stat"><div class="l">Last 7 days</div><div class="v" id="st7">—</div><div class="s">views · signups</div></div>
+        <div class="stat"><div class="l">Accepted requests</div><div class="v" id="stSign">—</div><div class="s">request receipt accepted</div></div>
+        <div class="stat"><div class="l">Request rate</div><div class="v" id="stRate">—</div><div class="s">accepted requests ÷ views</div></div>
+        <div class="stat"><div class="l">Last 7 days</div><div class="v" id="st7">—</div><div class="s">views · accepted requests</div></div>
       </div>
 
       <div class="card">
         <div class="hd"><h2>Per popup</h2><span class="note" id="liveUpdated"></span></div>
         <div class="bd tight twrap">
           <table>
-            <thead><tr><th>Popup</th><th>Unique views</th><th>Signups</th><th>Rate</th><th>Last 7 days</th></tr></thead>
+            <thead><tr><th>Popup</th><th>Unique views</th><th>Accepted requests</th><th>Request rate</th><th>Last 7 days</th></tr></thead>
             <tbody id="liveRows"><tr><td colspan="5" class="m">Connecting to the live counter…</td></tr></tbody>
           </table>
         </div>
@@ -194,7 +194,7 @@ body.locked .app{display:none}
           </table>
         </div>
       </div>
-      <p style="font-size:12px;color:var(--mut)">Sales attribution (which orders came from the popups) joins this dashboard before launch — it is a required step on the launch plan.</p>
+      <p style="font-size:12px;color:var(--mut)">Confirmed signups and sales attribution come from provider reconciliation, not this client counter. Both remain explicit launch checks below.</p>
     </section>
 
     <!-- ================= POPUPS & RULES ================= -->
@@ -298,11 +298,12 @@ body.locked .app{display:none}
           <ul class="check">
             <li><span class="st done">✓</span><div><b>Designs approved &amp; built</b><div class="d">Both popups installed on a hidden test copy of the theme — live store untouched.</div></div></li>
             <li><span class="st done">✓</span><div><b>Independent plan review</b><div class="d">5 review rounds passed before building.</div></div></li>
-            <li><span class="st done">✓</span><div><b>Independent installation audit</b><div class="d">20 findings — all repaired in build v2 (languages, accessibility, consent texts, full country list).</div></div></li>
-            <li><span class="st done">✓</span><div><b>Live counter connected</b><div class="d">Views and signups are recorded automatically; this dashboard reads them live.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Independent installation audit</b><div class="d">All source-level blockers repaired in the exact unpublished v2.4 candidate (languages, accessibility, consent, trigger safety, country handling and request races).</div></div></li>
+            <li><span class="st done">✓</span><div><b>Database security receipt</b><div class="d">Live definitions, ACLs, RLS, constraints, indexes, retention cron and safety counts independently re-read on 23 Aug 2026. Raw event reads remain blocked.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Live counter connected</b><div class="d">Views and accepted subscription requests are recorded automatically; confirmed signups remain authoritative in Klaviyo.</div></div></li>
             <li><span class="st todo">…</span><div><b>Owner visual review</b><div class="d">Saul checks both popups on phone + desktop; approves consent wording.</div></div></li>
-            <li><span class="st todo">…</span><div><b>End-to-end signup test</b><div class="d">Real test profiles prove emails + SMS deliver correctly, incl. SMS #1 timing.</div></div></li>
-            <li><span class="st todo">…</span><div><b>Sales attribution</b><div class="d">Orders matched to popup signups — joins the dashboard before launch.</div></div></li>
+            <li><span class="st todo">…</span><div><b>End-to-end signup test</b><div class="d">Fresh designated test profiles prove Email only, Email + SMS, error and timing paths without confusing request acceptance with confirmed consent.</div></div></li>
+            <li><span class="st todo">…</span><div><b>Provider reconciliation</b><div class="d">Klaviyo confirms subscription/list/flow entry; Shopify attribution supplies order and revenue reporting. Client telemetry is never relabeled as either.</div></div></li>
             <li><span class="st todo">…</span><div><b>Switch-over</b><div class="d">Old Klaviyo forms off, new popups on. Reversible in one click.</div></div></li>
           </ul>
         </div>
@@ -362,7 +363,7 @@ body.locked .app{display:none}
     var ps=d.popups||[];
     var rows=document.getElementById('liveRows');
     if(!ps.length){
-      rows.innerHTML='<tr><td colspan="5" class="m">Counter connected — no production signups yet. The popups are in testing mode; numbers start the moment they go live.</td></tr>';
+      rows.innerHTML='<tr><td colspan="5" class="m">Counter connected — no production requests yet. The popups are in testing mode; numbers start the moment they go live.</td></tr>';
       return;
     }
     var tv=0,ta=0,t7v=0,t7a=0;
