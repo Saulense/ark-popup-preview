@@ -1,0 +1,1 @@
+window.ARK_DASHBOARD_CONFIG=Object.freeze({"endpoint":"https://dekqaraectuuidezwibq.supabase.co/functions/v1/ark-popup-reporting","publicKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRla3FhcmFlY3R1dWlkZXp3aWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Mzc4MjIsImV4cCI6MjA5NTUxMzgyMn0.iC48SPtxWsM7KQsuVB9-oRE252cCwHhg6Vl9LWrQbkI","launchDate":"2026-10-06"});

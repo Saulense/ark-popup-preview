@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>ARK Popups — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --canvas:#F7F8FA; --surface:#FFFFFF; --line:#E5E8EC; --line2:#EEF1F4;
+  --ink:#101828; --mut:#667085; --soft:#98A2B3;
+  --green:#0B5F4F; --green-bg:#EAF4F1; --ok:#12B76A; --ok-bg:#ECFDF3;
+  --amber:#B54708; --amber-bg:#FFFAEB; --gold:#C79A4B;
+  --r:12px; --sh:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--canvas);color:var(--ink);font:14px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.app{display:flex;min-height:100dvh}
+/* ---------- sidebar ---------- */
+.side{flex:0 0 230px;background:var(--surface);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100dvh}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 10px 16px}
+.brand .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(160deg,#0B5F4F,#07443A);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.brand .mark svg{width:17px;height:17px}
+.brand b{font-size:14.5px;font-weight:700;letter-spacing:.1px}
+.brand span{display:block;font-size:11px;color:var(--mut);font-weight:500}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;color:var(--mut);font:500 13.5px/1 Inter,sans-serif;padding:10px 12px;border-radius:9px;cursor:pointer}
+.nav button svg{width:16px;height:16px;flex:0 0 auto}
+.nav button:hover{background:var(--line2);color:var(--ink)}
+.nav button.on{background:var(--green-bg);color:var(--green);font-weight:600}
+.side .foot{margin-top:auto;padding:10px 12px;font-size:11px;color:var(--soft);line-height:1.5}
+
+/* ---------- main ---------- */
+.main{flex:1 1 auto;min-width:0;padding:26px 28px 60px;max-width:1060px}
+.pagehead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.pagehead h1{font-size:19px;font-weight:700;letter-spacing:-.2px}
+.pagehead .sub{color:var(--mut);font-size:12.5px;margin-top:3px}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 11.5px/1 Inter,sans-serif;padding:6px 11px;border-radius:999px;white-space:nowrap}
+.pill .dot{width:7px;height:7px;border-radius:50%}
+.pill.live{background:var(--ok-bg);color:#067647}.pill.live .dot{background:var(--ok)}
+.pill.test{background:var(--amber-bg);color:var(--amber)}.pill.test .dot{background:#F79009}
+.pill.idle{background:var(--line2);color:var(--mut)}.pill.idle .dot{background:var(--soft)}
+
+.view{display:none}
+.view.on{display:block}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:14px}
+.card .hd{padding:14px 18px;border-bottom:1px solid var(--line2);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.card .hd h2{font-size:14px;font-weight:600}
+.card .hd .note{font-size:11.5px;color:var(--mut)}
+.card .bd{padding:16px 18px}
+.card .bd.tight{padding:0}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px}
+.stat .l{font-size:11.5px;font-weight:500;color:var(--mut)}
+.stat .v{font-size:22px;font-weight:700;letter-spacing:-.4px;margin-top:4px;font-variant-numeric:tabular-nums}
+.stat .s{font-size:11px;color:var(--soft);margin-top:3px}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font:600 11px/1.4 Inter,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:var(--mut);padding:10px 18px;border-bottom:1px solid var(--line2);white-space:nowrap}
+td{padding:12px 18px;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums;vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.m{color:var(--mut)}
+.twrap{overflow-x:auto}
+
+.plist{list-style:none}
+.plist li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line2);font-size:13px;color:#344054}
+.plist li:last-child{border-bottom:0}
+.plist .ic{flex:0 0 auto;width:18px;height:18px;border-radius:6px;background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font:600 11px/1 Inter,sans-serif;background:var(--line2);color:#344054;border-radius:999px;padding:6px 10px;white-space:nowrap}
+.chip.g{background:var(--green-bg);color:var(--green)}
+.arrow{color:var(--soft);font-size:11px}
+
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;font:600 12.5px/1 Inter,sans-serif;padding:10px 16px;border-radius:9px;border:0;cursor:pointer}
+.btn:hover{background:#0A5245;text-decoration:none}
+
+.check{list-style:none}
+.check li{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--line2);font-size:13px}
+.check li:last-child{border-bottom:0}
+.check .st{flex:0 0 auto;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px}
+.check .done{background:var(--ok-bg);color:#067647}
+.check .todo{background:var(--line2);color:var(--soft)}
+.check b{font-weight:600}
+.check .d{color:var(--mut);font-size:12px;margin-top:2px}
+
+.burger{display:none;margin-left:auto;width:40px;height:40px;border:1px solid var(--line);border-radius:9px;background:var(--surface);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0}
+.burger span{display:block;width:16px;height:2px;background:var(--ink);border-radius:2px;transition:.2s}
+.burger.open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+/* ---------- lock screen ---------- */
+#lock{position:fixed;inset:0;z-index:100;background:var(--canvas);display:flex;align-items:center;justify-content:center;padding:20px}
+#lock .box{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh);padding:34px 30px;width:min(360px,100%);text-align:center}
+#lock .mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(160deg,#0B5F4F,#07443A);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+#lock h1{font-size:17px;font-weight:700;margin-bottom:4px}
+#lock p{font-size:12.5px;color:var(--mut);margin-bottom:16px}
+#lock input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:600 16px/1 Inter,sans-serif;text-align:center;letter-spacing:6px;outline:none}
+#lock input:focus{border-color:var(--green)}
+#lock button{width:100%;margin-top:10px;background:var(--green);color:#fff;border:0;border-radius:10px;padding:12px;font:600 13.5px/1 Inter,sans-serif;cursor:pointer}
+#lock .err{display:none;color:#B42318;font-size:12px;margin-top:10px}
+#lock.deny .err{display:block}
+#lock.deny .box{animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+body.locked .app{display:none}
+/* ---------- mobile ---------- */
+@media (max-width:880px){
+  .app{flex-direction:column}
+  .side{position:sticky;top:0;z-index:20;height:auto;flex:0 0 auto;flex-direction:column;padding:12px 14px 0;border-right:0;border-bottom:1px solid var(--line)}
+  .brand{padding:2px 2px 10px}
+  .burger{display:flex}
+  .nav{display:none;flex-direction:column;gap:2px;padding-bottom:12px}
+  .nav.open{display:flex}
+  .nav button{padding:12px 13px;font-size:14px}
+  .side .foot{display:none}
+  .main{padding:18px 14px 48px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  th,td{padding-left:14px;padding-right:14px}
+}
+</style>
+</head>
+<body class="locked">
+<div id="lock">
+  <div class="box">
+    <div class="mark"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAMAAAD8CC+4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA0NpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDkuMS1jMDAzIDc5Ljk2OTBhODdmYywgMjAyNS8wMy8wNi0yMDo1MDoxNiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI3LjAgKDIwMjUwOTI0Lm0uMzIzNiA5NmU0ZTA2KSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QkIxOEU0QzRBMTlCMTFGMDk5QTBDMzUxQjhGRkM1MjMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QkIxOEU0QzVBMTlCMTFGMDk5QTBDMzUxQjhGRkM1MjMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpCQjE4RTRDMkExOUIxMUYwOTlBMEMzNTFCOEZGQzUyMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpCQjE4RTRDM0ExOUIxMUYwOTlBMEMzNTFCOEZGQzUyMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFj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" alt="" style="width:24px;height:24px"></div>
+    <h1>ARK Popups</h1>
+    <p>Enter the team code to open the dashboard. (Convenience screen — the numbers shown are aggregates only; no emails or phone numbers exist in this system.)</p>
+    <input id="lockCode" type="password" inputmode="numeric" autocomplete="off" placeholder="••••••••">
+    <button id="lockBtn" type="button">Open dashboard</button>
+    <div class="err">Wrong code — try again.</div>
+  </div>
+</div>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="mark"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAMAAAD8CC+4AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA0NpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDkuMS1jMDAzIDc5Ljk2OTBhODdmYywgMjAyNS8wMy8wNi0yMDo1MDoxNiAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI3LjAgKDIwMjUwOTI0Lm0uMzIzNiA5NmU0ZTA2KSAgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QkIxOEU0QzRBMTlCMTFGMDk5QTBDMzUxQjhGRkM1MjMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QkIxOEU0QzVBMTlCMTFGMDk5QTBDMzUxQjhGRkM1MjMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpCQjE4RTRDMkExOUIxMUYwOTlBMEMzNTFCOEZGQzUyMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpCQjE4RTRDM0ExOUIxMUYwOTlBMEMzNTFCOEZGQzUyMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFj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" alt="ARK" style="width:20px;height:20px"></div>
+      <div><b>ARK Popups</b><span>Dashboard</span></div>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-v="dash" class="on"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5"/></svg>Dashboard</button>
+      <button data-v="pop"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="14" height="12" rx="2"/><path d="M3 8h14"/></svg>Popups &amp; rules</button>
+      <button data-v="klav"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h14v10H3z"/><path d="m3 6 7 5 7-5"/></svg>Klaviyo</button>
+      <button data-v="launch"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3v10"/><path d="m6 9 4 4 4-4"/><path d="M4 17h12"/></svg>Launch plan</button>
+    </nav>
+    <div class="foot">Internal — ARK of Sweden.<br>Rules text updates with every popup change; numbers load live.</div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="view on" id="v-dash">
+      <div class="pagehead">
+        <div>
+          <h1>Popup performance</h1>
+          <div class="sub">Deduplicated per visitor session · test activity excluded · accepted-request telemetry only (confirmed subscriptions remain authoritative in Klaviyo). Abuse protection uses short-lived pseudonymous network fingerprints, auto-deleted within ~2 days.</div>
+        </div>
+        <span class="pill idle" id="liveBadge"><span class="dot"></span><span id="liveBadgeTxt">Connecting…</span></span>
+      </div>
+
+      <div class="stats" id="statCards">
+        <div class="stat"><div class="l">Unique views</div><div class="v" id="stViews">—</div><div class="s">both popups, total</div></div>
+        <div class="stat"><div class="l">Accepted requests</div><div class="v" id="stSign">—</div><div class="s">request receipt accepted</div></div>
+        <div class="stat"><div class="l">Request rate</div><div class="v" id="stRate">—</div><div class="s">accepted requests ÷ views</div></div>
+        <div class="stat"><div class="l">Last 7 days</div><div class="v" id="st7">—</div><div class="s">views · accepted requests</div></div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Per popup</h2><span class="note" id="liveUpdated"></span></div>
+        <div class="bd tight twrap">
+          <table>
+            <thead><tr><th>Popup</th><th>Unique views</th><th>Accepted requests</th><th>Request rate</th><th>Last 7 days</th></tr></thead>
+            <tbody id="liveRows"><tr><td colspan="5" class="m">Connecting to the live counter…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Baseline — old Klaviyo forms being replaced</h2><span class="note">snapshot 2026-08-22</span></div>
+        <div class="bd tight twrap">
+          <table>
+            <thead><tr><th>Form</th><th>Submitted</th><th>Rate</th><th>Revenue</th></tr></thead>
+            <tbody>
+              <tr><td>EXIT POP-UP (Mobile)</td><td>818</td><td>4.5%</td><td>€6K</td></tr>
+              <tr><td>Ark Melts Extra Strong</td><td>26</td><td>10.2%</td><td>€345</td></tr>
+              <tr><td>EXIT POP-UP (Desktop)</td><td>41</td><td>4.0%</td><td>€402</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--mut)">Confirmed signups and sales attribution come from provider reconciliation, not this client counter. Both remain explicit launch checks below.</p>
+    </section>
+
+    <!-- ================= POPUPS & RULES ================= -->
+    <section class="view" id="v-pop">
+      <div class="pagehead">
+        <div><h1>Popups &amp; rules</h1><div class="sub">What shows where, and why nobody gets annoyed.</div></div>
+        <a class="btn" href="https://saulense.github.io/ark-popup-preview/" target="_blank" rel="noopener">Open live designs</a>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Popup 1 — ARK Melts (10% off)</h2><span class="pill test"><span class="dot"></span>Testing</span></div>
+        <div class="bd">
+          <div class="chips" style="margin-bottom:10px">
+            <span class="chip g">Email · 10%</span><span class="arrow">→</span>
+            <span class="chip g">Phone · 15% (optional)</span><span class="arrow">→</span>
+            <span class="chip g">Success</span>
+          </div>
+          <ul class="plist">
+            <li><span class="ic">◎</span><span>Shows <b>only</b> on 4 pages: Melts Extra Strong, Melts Original, NeuroFuel Kit, and the ark-melts landing page.</span></li>
+            <li><span class="ic">◷</span><span>Never instantly: on phones it waits for <b>5 seconds + a third of the page scrolled</b>; on computers additionally for a real exit movement. An "Exit only" mode exists as a switch.</span></li>
+            <li><span class="ic">▸</span><span>The small "GET 10% OFF" teaser tab is <b>not</b> on the page at arrival — it appears only after someone closes the popup. Closing the teaser hides it for that visit. Clicking it always opens the popup.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Popup 2 — Leaving Already?</h2><span class="pill test"><span class="dot"></span>Testing</span></div>
+        <div class="bd">
+          <div class="chips" style="margin-bottom:10px">
+            <span class="chip g">Email · 10%</span><span class="arrow">→</span>
+            <span class="chip g">Phone · +5% (optional)</span><span class="arrow">→</span>
+            <span class="chip g">Success</span>
+          </div>
+          <ul class="plist">
+            <li><span class="ic">◎</span><span>Shows everywhere <b>except</b> the 4 Melts pages, cart, checkout, ad landing pages and policy pages.</span></li>
+            <li><span class="ic">◷</span><span>Opens only on real leaving behavior: <b>3+ pages viewed, 45+ seconds</b> of actual on-screen time, then a genuine exit move (mouse to top edge on desktop / long fast scroll-up on mobile). Never a timer. No teaser, ever.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Politeness rules</h2></div>
+        <div class="bd">
+          <ul class="plist">
+            <li><span class="ic">1</span><span>Maximum <b>one popup per visit</b> across the whole store.</span></li>
+            <li><span class="ic">2</span><span>Close one popup → <b>no other popup that visit</b> (at most the teaser on Melts pages).</span></li>
+            <li><span class="ic">3</span><span>Closed = quiet for <b>7 days</b> (Melts popup) / <b>30 days</b> (Leaving popup).</span></li>
+            <li><span class="ic">4</span><span><b>Signed up = never sees any popup or teaser again</b> — shared across both popups.</span></li>
+            <li><span class="ic">5</span><span>Cart and checkout are sacred — nothing ever interrupts a purchase.</span></li>
+            <li><span class="ic">6</span><span>All 9 store languages supported; phone country pre-selected per market.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= KLAVIYO ================= -->
+    <section class="view" id="v-klav">
+      <div class="pagehead">
+        <div><h1>Klaviyo connection</h1><div class="sub">For the email team — what changes and what doesn't.</div></div>
+        <span class="pill live"><span class="dot"></span>Flows untouched</span>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>What happens on signup</h2></div>
+        <div class="bd">
+          <div class="chips" style="margin-bottom:12px">
+            <span class="chip">Popup</span><span class="arrow">→</span>
+            <span class="chip">Newsletter list</span><span class="arrow">→</span>
+            <span class="chip g">PMA | Welcome Flow</span><span class="arrow">→</span>
+            <span class="chip">WELCOME10 email + 5% SMS series</span>
+          </div>
+          <ul class="plist">
+            <li><span class="ic">✓</span><span>The popups add people to the <b>same Newsletter list</b> as today. Every flow, email and SMS continues exactly as it is — nothing is rebuilt.</span></li>
+            <li><span class="ic">✓</span><span>Email + phone are submitted <b>together at the end</b> of the journey, so SMS consent exists <b>before</b> the flow starts (today's forms submit email first, which can make the flow skip SMS #1).</span></li>
+            <li><span class="ic">✓</span><span>Typing an email is not consent — nothing is sent until the visitor clicks Continue and finishes. Success appears only after Klaviyo confirms receipt.</span></li>
+            <li><span class="ic">✓</span><span>Every profile is tagged with <b>custom_source</b> ("ARK Popup - Product" / "ARK Popup - Exit") and <b>popup_signup_source</b> (exact page) — the email team can branch flow content on these anytime, without any change on the popup side.</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>At switch-over (later, owner-approved)</h2></div>
+        <div class="bd">
+          <ul class="plist">
+            <li><span class="ic">1</span><span>The 3 old Klaviyo sign-up forms get unpublished — <b>forms only</b>; flows and tracking stay.</span></li>
+            <li><span class="ic">2</span><span>Klaviyo's site tracking remains active (Browse / Site Abandonment flows depend on it).</span></li>
+            <li><span class="ic">3</span><span>Fully reversible: re-publish the old forms anytime.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LAUNCH ================= -->
+    <section class="view" id="v-launch">
+      <div class="pagehead">
+        <div><h1>Launch plan</h1><div class="sub">Where we are on the way to switching over.</div></div>
+        <span class="pill test"><span class="dot"></span>In testing</span>
+      </div>
+      <div class="card">
+        <div class="bd">
+          <ul class="check">
+            <li><span class="st done">✓</span><div><b>Designs approved &amp; built</b><div class="d">Both popups installed on a hidden test copy of the theme — live store untouched.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Independent plan review</b><div class="d">5 review rounds passed before building.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Independent installation audit</b><div class="d">All source-level blockers repaired in the exact unpublished v2.7 candidate (languages, accessibility, consent, trigger safety, country handling, request races and owner-reported browser/mobile rendering defects).</div></div></li>
+            <li><span class="st done">✓</span><div><b>Database security receipt</b><div class="d">Live definitions, ACLs, RLS, constraints, indexes, retention cron and safety counts independently re-read on 23 Aug 2026. Raw event reads remain blocked.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Owner mobile rendering repair</b><div class="d">Verified 23 Aug 2026 on the unpublished candidate: white headings, visible email/phone placeholders, vertically centred 52px fields, compact flag + dial-code display with full localized country picker, and an always-present image blend. The live theme remains untouched.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Saved-phone + country reconciliation repair</b><div class="d">v2.7 keeps the closed selector's visible flag+dial code synchronized with international numbers inserted by typing or saved-contact autofill: +46 visibly selects Sweden and +370 Lithuania, while national numbers retain the chosen country. Browser suggestions are discouraged but may still be shown; correctness does not depend on hiding them. The closed selector frame is also repaired. Candidate SHA-256: b8ed6dd6fe034a3bc4789952f7a03ca9ac235dbc239c8f3e442c4bdcb0e1d101. Live remains untouched.</div></div></li>
+            <li><span class="st done">✓</span><div><b>Live counter connected</b><div class="d">Views and accepted subscription requests are recorded automatically; confirmed signups remain authoritative in Klaviyo.</div></div></li>
+            <li><span class="st todo">…</span><div><b>Owner visual review</b><div class="d">Saul checks both popups on phone + desktop; approves consent wording.</div></div></li>
+            <li><span class="st todo">…</span><div><b>End-to-end signup test</b><div class="d">Fresh designated test profiles prove Email only, Email + SMS, error and timing paths without confusing request acceptance with confirmed consent.</div></div></li>
+            <li><span class="st todo">…</span><div><b>Provider reconciliation</b><div class="d">Klaviyo confirms subscription/list/flow entry; Shopify attribution supplies order and revenue reporting. Client telemetry is never relabeled as either.</div></div></li>
+            <li><span class="st todo">…</span><div><b>Switch-over</b><div class="d">Old Klaviyo forms off, new popups on. Reversible in one click.</div></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  /* ---- access gate ---- */
+  var CODE="12344321";
+  var lock=document.getElementById('lock');
+  function unlock(){ document.body.classList.remove('locked'); lock.style.display='none'; }
+  try{ if(localStorage.getItem('ark_dash_v1')==='1') unlock(); }catch(e){}
+  function tryCode(){
+    var v=(document.getElementById('lockCode').value||'').trim();
+    if(v===CODE){ try{ localStorage.setItem('ark_dash_v1','1'); }catch(e){} unlock(); }
+    else{ lock.classList.remove('deny'); void lock.offsetWidth; lock.classList.add('deny'); }
+  }
+  document.getElementById('lockBtn').addEventListener('click',tryCode);
+  document.getElementById('lockCode').addEventListener('keydown',function(e){ if(e.key==='Enter') tryCode(); });
+
+  /* ---- burger (mobile) ---- */
+  var burger=document.getElementById('burger'), navEl=document.getElementById('nav');
+  burger.addEventListener('click',function(){
+    var open=navEl.classList.toggle('open');
+    burger.classList.toggle('open',open);
+    burger.setAttribute('aria-expanded',open?'true':'false');
+  });
+
+  /* ---- side navigation ---- */
+  var nav=document.getElementById('nav');
+  function show(v){
+    document.querySelectorAll('.view').forEach(function(s){ s.classList.toggle('on', s.id==='v-'+v); });
+    nav.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); });
+    try{ history.replaceState(null,'','#'+v); }catch(e){}
+    window.scrollTo(0,0);
+  }
+  nav.addEventListener('click', function(e){
+    var b=e.target.closest('button'); if(b){ show(b.dataset.v); navEl.classList.remove('open'); burger.classList.remove('open'); burger.setAttribute('aria-expanded','false'); }
+  });
+  var h=(location.hash||'').replace('#','');
+  if(['dash','pop','klav','launch'].indexOf(h)>=0) show(h);
+
+  /* ---- live numbers ---- */
+  var U="https://dekqaraectuuidezwibq.supabase.co", K="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRla3FhcmFlY3R1dWlkZXp3aWJxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5Mzc4MjIsImV4cCI6MjA5NTUxMzgyMn0.iC48SPtxWsM7KQsuVB9-oRE252cCwHhg6Vl9LWrQbkI";
+  var names={p1:"ARK Melts popup",p2:"Leaving popup"};
+  var badge=document.getElementById('liveBadge'), btxt=document.getElementById('liveBadgeTxt');
+  fetch(U+"/rest/v1/rpc/popup_stats",{method:"POST",headers:{"apikey":K,"Authorization":"Bearer "+K,"Content-Type":"application/json"},body:"{}"})
+  .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+  .then(function(d){
+    badge.className='pill live'; btxt.textContent='LIVE';
+    var t=new Date(d.updated_at);
+    document.getElementById('liveUpdated').textContent='checked '+t.toLocaleString(undefined,{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
+    var ps=d.popups||[];
+    var rows=document.getElementById('liveRows');
+    if(!ps.length){
+      rows.innerHTML='<tr><td colspan="5" class="m">Counter connected — no production requests yet. The popups are in testing mode; numbers start the moment they go live.</td></tr>';
+      return;
+    }
+    var tv=0,ta=0,t7v=0,t7a=0;
+    rows.innerHTML=ps.map(function(p){
+      tv+=p.views; ta+=p.accepted; t7v+=p.views_7d; t7a+=p.accepted_7d;
+      var rate=p.views>0?((100*p.accepted/p.views).toFixed(1)+'%'):'—';
+      return '<tr><td>'+(names[p.popup]||p.popup)+'</td><td>'+p.views+'</td><td>'+p.accepted+'</td><td>'+rate+'</td><td class="m">'+p.views_7d+' · '+p.accepted_7d+'</td></tr>';
+    }).join('');
+    document.getElementById('stViews').textContent=tv;
+    document.getElementById('stSign').textContent=ta;
+    document.getElementById('stRate').textContent=tv>0?((100*ta/tv).toFixed(1)+'%'):'—';
+    document.getElementById('st7').textContent=t7v+' · '+t7a;
+  })
+  .catch(function(){
+    badge.className='pill idle'; btxt.textContent='Counter unreachable';
+    document.getElementById('liveRows').innerHTML='<tr><td colspan="5" class="m">Live counter unreachable right now — try refreshing.</td></tr>';
+  });
+})();
+</script>
+</body>
+</html>
