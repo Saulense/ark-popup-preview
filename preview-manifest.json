@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-10-07T16:33:16.642Z",
+  "themeId": "199461962072",
+  "sourceSHA256": "aabe90f8af4ebb7a27a602d7e5410fae7a7594caf9ba7d6b7d078cfac32b2c1f",
+  "settingsSHA256": "db5b8db8de6e14dcc18d2566dedd6908f2369bb8b501f80f122c5c7b9385b05a",
+  "formVersion": "r4-5b4c223f3",
+  "popups": {
+    "p1": {
+      "enabled": true
+    },
+    "p2": {
+      "enabled": true
+    }
+  },
+  "languages": [
+    "en",
+    "sv",
+    "de",
+    "fr",
+    "es",
+    "it",
+    "nb",
+    "lt",
+    "id"
+  ],
+  "assets": [
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-oswald-700.woff2?v=26580838752302952891791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-inter-400.woff2?v=53399804603581884051791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-inter-600.woff2?v=53399804603581884051791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-inter-700.woff2?v=53399804603581884051791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-email.webp?v=117250652935523294281791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-logo.png?v=72555954077737253711791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-phone.webp?v=132469416295804011251791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-success.webp?v=20123702056946256621791261594",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-forest.webp?v=104517802207203486021791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-lv-phone.webp?v=91370653081437685541791261593",
+    "https://arkofsweden.com/cdn/shop/t/178/assets/ark-pop-lv-success.webp?v=33238092698072962711791261593"
+  ]
+}
