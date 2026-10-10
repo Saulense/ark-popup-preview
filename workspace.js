@@ -32,10 +32,10 @@
   const versions=(Array.isArray(d.versions)?d.versions:[]).filter(v=>['p1','p2'].includes(v.popup)&&typeof v.form_version==='string'&&v.form_version.length<160&&safe(v.views)&&safe(v.accepted)&&Number.isFinite(Date.parse(v.first_seen))&&Number.isFinite(Date.parse(v.last_seen))).sort((a,b)=>a.popup.localeCompare(b.popup)||a.first_seen.localeCompare(b.first_seen));
   for(const v of versions){const tr=document.createElement('tr'),td=cell(tr,names[v.popup]+' · '+v.form_version,'version-label'),sm=document.createElement('small');sm.textContent=v.first_seen.slice(0,10)+' → '+v.last_seen.slice(0,10);td.append(sm);cell(tr,count(v.views));cell(tr,count(v.accepted));cell(tr,rate(v.accepted,v.views,!d.partial_telemetry));cell(tr,v.views<100||v.accepted<10?'Small sample':'Descriptive only',v.views<100||v.accepted<10?'sample-small':'');$('versionRows').append(tr);}
   if(!versions.length){const tr=document.createElement('tr');cell(tr,'No version events recorded for this period.').colSpan=5;$('versionRows').append(tr);}
-  $('versionNote').textContent=d.partial_telemetry?'Rates hidden: selected dates include time before tracking. Select a complete day from 7 October onward.':'Compare the rates, not just signup totals. Different dates, audiences and traffic mix can change results. No causal winner is inferred.';
+  $('versionNote').textContent=d.partial_telemetry?'Rates unavailable: no complete tracking window.':(d.range_clipped?'Only the available tracked period is included. ':'')+'Compare the rates, not just signup totals. Different dates, audiences and traffic mix can change results. No causal winner is inferred.';
   const unknown=versions.some(v=>manifest&&v.form_version!==manifest.formVersion&&v.last_seen>manifest.capturedAt);if(unknown)$('snapshot').textContent='A newer or different version has been observed since this snapshot. Preview needs recapture before design approval.';
-  $('dailyRows').replaceChildren();const days=d.data_through?d.daily.filter(x=>safe(x.views)&&safe(x.email)&&Date.parse(x.date)<Date.parse(d.data_through)):[];
-  for(const day of days){const tr=document.createElement('tr');cell(tr,day.date);const complete=d.telemetry_at&&Date.parse(day.date+'T00:00:00Z')>=Date.parse(d.telemetry_at);cell(tr,complete?count(day.views):'—');cell(tr,count(day.email));$('dailyRows').append(tr);}
+  $('dailyRows').replaceChildren();const days=d.data_through?d.daily.filter(x=>safe(x.views)&&safe(x.email)&&Date.parse(x.date)<Date.parse(d.data_through)&&Date.parse(x.date)+86400000>Date.parse(d.data_from)):[];
+  for(const day of days){const tr=document.createElement('tr');cell(tr,day.date);const partial=Date.parse(day.date+'T00:00:00Z')<Date.parse(d.data_from);if(partial)tr.firstChild.textContent+=' · tracked part';cell(tr,count(day.views));cell(tr,count(day.email));$('dailyRows').append(tr);}
   const ranked=days.filter(x=>x.email>0).sort((a,b)=>b.email-a.email),best=ranked[0];
   $('observations').textContent=!d.data_through?'Signup verification pending.':best?`${best.date} recorded the most email signups in this range: ${count(best.email)} (${count(best.views)} tracked views). This is a volume observation, not proof that a change caused a spike.`:'No verified email signups recorded in this range yet. No improvement claim.';
  }
@@ -43,4 +43,3 @@
  window.ARKDashboardUI={render,openPopup(id){selected=id;step='email';nav('popups');}};
  nav(['performance','popups','changes'].includes(location.hash.slice(1))?location.hash.slice(1):'performance');
 })();
-
