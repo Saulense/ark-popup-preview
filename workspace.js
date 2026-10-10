@@ -34,12 +34,13 @@
   if(!versions.length){const tr=document.createElement('tr');cell(tr,'No version events recorded for this period.').colSpan=5;$('versionRows').append(tr);}
   $('versionNote').textContent=d.partial_telemetry?'Rates hidden: selected dates include time before tracking. Select a complete day from 7 October onward.':'Compare the rates, not just signup totals. Different dates, audiences and traffic mix can change results. No causal winner is inferred.';
   const unknown=versions.some(v=>manifest&&v.form_version!==manifest.formVersion&&v.last_seen>manifest.capturedAt);if(unknown)$('snapshot').textContent='A newer or different version has been observed since this snapshot. Preview needs recapture before design approval.';
-  $('dailyRows').replaceChildren();const days=d.provider_updated_at?d.daily.filter(x=>safe(x.views)&&safe(x.email)):[];
+  $('dailyRows').replaceChildren();const days=d.data_through?d.daily.filter(x=>safe(x.views)&&safe(x.email)&&Date.parse(x.date)<Date.parse(d.data_through)):[];
   for(const day of days){const tr=document.createElement('tr');cell(tr,day.date);const complete=d.telemetry_at&&Date.parse(day.date+'T00:00:00Z')>=Date.parse(d.telemetry_at);cell(tr,complete?count(day.views):'—');cell(tr,count(day.email));$('dailyRows').append(tr);}
   const ranked=days.filter(x=>x.email>0).sort((a,b)=>b.email-a.email),best=ranked[0];
-  $('observations').textContent=!d.provider_updated_at?'Klaviyo verification pending.':best?`${best.date} recorded the most email signups in this range: ${count(best.email)} (${count(best.views)} tracked views). This is a volume observation, not proof that a change caused a spike.${d.streams_pending?' Provider history is still catching up.':''}`:'No verified email signups recorded in this range yet. No improvement claim.';
+  $('observations').textContent=!d.data_through?'Signup verification pending.':best?`${best.date} recorded the most email signups in this range: ${count(best.email)} (${count(best.views)} tracked views). This is a volume observation, not proof that a change caused a spike.`:'No verified email signups recorded in this range yet. No improvement claim.';
  }
  $('export').onclick=()=>{if(!data){$('observations').textContent='Open Performance and load a report first.';return;}const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),period,snapshot:manifest,report:data,interpretation:'Observed counts; submission rate is requests/views, not confirmed subscriber conversion or causal attribution. No ROI/ROAS.'},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ark-popup-report-'+period.start+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
  window.ARKDashboardUI={render,openPopup(id){selected=id;step='email';nav('popups');}};
  nav(['performance','popups','changes'].includes(location.hash.slice(1))?location.hash.slice(1):'performance');
 })();
+
