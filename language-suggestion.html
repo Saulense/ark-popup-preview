@@ -1,0 +1,46 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content=noindex><title>ARK · Language suggestion preview</title><style>
+body{margin:0;background:#f5f4ee;color:#172a24;font:16px/1.5 system-ui,sans-serif}main{max-width:52rem;margin:7vh auto;padding:24px}header{background:#075b4c;color:white;padding:12px 24px;font-weight:700}#preview-language,main button{font:inherit;padding:7px;color:#143c32}h1{font-size:clamp(24px,4vw,38px);line-height:1.2}#ArkLangNudge[hidden],#ArkLangNudge [hidden]{display:none!important}
+#ArkLangNudge{position:fixed;z-index:2147482000;inset:auto auto calc(18px + env(safe-area-inset-bottom,0px)) 18px;box-sizing:border-box;width:min(380px,calc(100vw - 36px));max-height:calc(100vh - 36px);max-height:calc(100dvh - 36px);overflow:auto;padding:16px 18px 8px;background:#fffdf7;color:#172a24;border:1px solid #25463a;border-top:4px solid #075b4c;border-radius:14px;box-shadow:0 3px 0 #143f3224,0 8px 28px #15392b20;font:400 14px/1.4 var(--body-font,Inter,sans-serif)}
+#ArkLangNudge *{box-sizing:border-box}
+#ArkLangNudge .ark-market-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+#ArkLangNudge h2{font:600 23px/1.15 var(--heading-font,Oswald,sans-serif);color:#104c40;margin:0;letter-spacing:0;text-transform:none}
+#ArkLangNudge button,#ArkLangNudge select{font:inherit;color:inherit;text-transform:none;letter-spacing:0;margin:0;cursor:pointer}
+#ArkLangNudge .ark-market-close{border:0;background:transparent;font:400 26px/1 sans-serif;min-width:44px;height:44px;margin:-6px -9px -6px 0}
+#ArkLangNudge .ark-market-fields,#ArkLangNudge .ark-market-actions{display:grid;grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr);gap:8px;align-items:end}
+#ArkLangNudge label{font:600 12px/1.35 var(--body-font,Inter,sans-serif);display:block;min-width:0;color:#365748}
+#ArkLangNudge select{appearance:auto;-webkit-appearance:menulist;width:100%;height:44px;margin-top:4px;padding:0 5px;background:#fff;border:1px solid #a9b8ae;border-radius:7px;color:#162c23;font-size:16px;font-weight:400}
+#ArkLangNudge .ark-market-actions{grid-template-columns:1fr 1fr;align-items:stretch;margin-top:12px}
+#ArkLangNudge .ark-market-actions button{border:1px solid #b9c7bd;border-radius:8px;min-height:44px;padding:7px 8px;background:transparent;line-height:1.2;font-weight:600}
+#ArkLangNudge #ArkLangNudgeApply{background:#075b4c;border-color:#075b4c;color:#fff}
+#ArkLangNudge #ArkLangNudgeApply:hover{background:#114a3b}
+#ArkLangNudge button:focus-visible,#ArkLangNudge select:focus-visible{outline:3px solid #4c8645;outline-offset:2px}
+#ArkLangNudge .ark-market-timer{display:block;margin:3px auto 0;min-height:28px;background:none;border:0;color:#526658;font-size:11px}
+#ArkLangNudge .ark-market-error{font-size:13px;color:#882824}
+@media(max-width:560px){#ArkLangNudge{inset:auto 10px calc(82px + env(safe-area-inset-bottom,0px)) 10px;width:auto;max-height:calc(100dvh - 100px);padding:13px 14px 6px}}
+@media(prefers-reduced-motion:no-preference){#ArkLangNudge:not([hidden]){animation:ark-market-enter .16s ease-out}@keyframes ark-market-enter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
+html.drawer-right-opened #ArkLangNudge,body:has(.drawer.open,.modal.modal--visible,dialog[open],localization-form .disclosure__button.open) #ArkLangNudge{visibility:hidden;pointer-events:none}
+</style><header>ARK OF SWEDEN</header><main><h1>Language and delivery suggestion</h1><label>Preview language <select id="preview-language"></select></label> <button id="open">Show suggestion</button><p id="result" role="status"></p></main><aside id="ArkLangNudge" class="ark-market-card" role="dialog" aria-labelledby="ArkLangNudgeTitle" lang="" data-country="" data-language="" data-countdown="Closes in [s] s" data-stays="Stays open">
+  <div class="ark-market-head">
+    <h2 id="ArkLangNudgeTitle">Shop in your language</h2>
+    <button type="button" class="ark-market-close" aria-label="Close suggestion" data-dismiss><span aria-hidden="true">×</span></button>
+  </div>
+  <form>
+    <div class="ark-market-fields">
+      <label>Language<select id="ArkLangNudgeLanguage" required></select></label>
+      <label>Deliver to<select id="ArkLangNudgeCountry" required>
+        
+      </select></label>
+    </div>
+    <div class="ark-market-actions">
+      <button type="submit" id="ArkLangNudgeApply">Apply changes</button>
+      <button type="button" id="ArkLangNudgeKeep">Keep current settings</button>
+    </div>
+    <p class="ark-market-error" role="status" hidden>Please try again or use the language and country selectors.</p>
+    <button type="button" class="ark-market-timer" aria-label="Keep open"></button>
+  </form>
+</aside><script>const words={"en": ["Shop in your language", "Language", "Deliver to", "Apply changes", "Keep current settings", "Close suggestion", "Keep open", "Closes in [s] s", "Stays open", "Please try again or use the language and country selectors."], "de": ["Sprache und Lieferland", "Sprache", "Lieferland", "Auswahl übernehmen", "Einstellungen behalten", "Vorschlag schließen", "Geöffnet lassen", "Schließt in [s] s", "Bleibt geöffnet", "Bitte erneut versuchen oder Sprache und Land im Menü auswählen."], "fr": ["Langue et pays de livraison", "Langue", "Livraison en", "Appliquer", "Garder mes réglages", "Fermer la suggestion", "Garder ouvert", "Fermeture dans [s] s", "Reste ouvert", "Réessayez ou choisissez la langue et le pays dans le menu."], "it": ["Lingua e paese di consegna", "Lingua", "Paese di consegna", "Applica", "Mantieni le impostazioni", "Chiudi il suggerimento", "Tieni aperto", "Si chiude tra [s] s", "Rimane aperto", "Riprova o scegli la lingua e il paese dal menu."], "es": ["Idioma y país de entrega", "Idioma", "Enviar a", "Aplicar cambios", "Mantener mi selección", "Cerrar sugerencia", "Mantener abierto", "Se cierra en [s] s", "Se mantiene abierto", "Vuelve a intentarlo o selecciona el idioma y el país en el menú."], "sv": ["Språk och leveransland", "Språk", "Leveransland", "Använd mina val", "Behåll mina val", "Stäng förslaget", "Håll öppet", "Stängs om [s] s", "Förblir öppet", "Försök igen eller välj språk och land i menyn."]}, markets={DE:['EUR','de','en'],FR:['EUR','fr','en'],ES:['EUR','es','en'],IT:['EUR','it','en'],SE:['SEK','sv','en'],CH:['CHF','de','fr','en'],US:['USD','en'],GB:['GBP','en']};
+const sel=document.querySelector('#preview-language'),box=document.querySelector('aside'),cs=box.querySelector('#ArkLangNudgeCountry'),ls=box.querySelector('#ArkLangNudgeLanguage'),labels=box.querySelectorAll('label'),btn=box.querySelectorAll('button'),names={en:'English',de:'Deutsch',fr:'Français',es:'Español',it:'Italiano',sv:'Svenska'};let countdown,remaining;
+function langs(){ls.replaceChildren(...markets[cs.value].slice(1).map(l=>new Option(names[l],l)));}
+function openDemo(){const l=sel.value,w=words[l];box.hidden=false;box.lang=l;box.querySelector('h2').textContent=w[0];labels[0].firstChild.nodeValue=w[1];labels[1].firstChild.nodeValue=w[2];btn[0].ariaLabel=w[5];btn[1].textContent=w[3];btn[2].textContent=w[4];btn[3].ariaLabel=w[6];const dn=new Intl.DisplayNames([l],{type:'region'});cs.replaceChildren(...Object.keys(markets).map(c=>new Option(dn.of(c)+' · '+markets[c][0],c)));cs.value={en:'DE',de:'DE',fr:'FR',it:'IT',es:'ES',sv:'SE'}[l];langs();clearInterval(countdown);remaining=20;btn[3].textContent=w[7].replace('[s]',remaining);countdown=setInterval(()=>{if(--remaining<=0){clearInterval(countdown);box.hidden=true;}else btn[3].textContent=w[7].replace('[s]',remaining);},1000);document.querySelector('#result').textContent='';}
+function pin(){clearInterval(countdown);btn[3].textContent=words[sel.value][8]}
+Object.keys(names).forEach(l=>sel.add(new Option(names[l],l)));cs.onchange=langs;sel.onchange=openDemo;document.querySelector('#open').onclick=openDemo;btn[0].onclick=btn[2].onclick=()=>{clearInterval(countdown);box.hidden=true;};box.onfocusin=pin;btn[3].onclick=pin;box.querySelector('form').onsubmit=e=>{e.preventDefault();document.querySelector('#result').textContent=cs.selectedOptions[0].text+' · '+ls.selectedOptions[0].text;box.hidden=true;};openDemo();</script></html>
