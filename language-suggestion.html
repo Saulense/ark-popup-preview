@@ -19,6 +19,7 @@ body{margin:0;background:#f5f4ee;color:#172a24;font:16px/1.5 system-ui,sans-seri
 @media(max-width:560px){#ArkLangNudge{inset:auto 10px calc(82px + env(safe-area-inset-bottom,0px)) 10px;width:auto;max-height:calc(100dvh - 100px);padding:13px 14px 6px}}
 @media(prefers-reduced-motion:no-preference){#ArkLangNudge:not([hidden]){animation:ark-market-enter .16s ease-out}@keyframes ark-market-enter{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
 html.drawer-right-opened #ArkLangNudge,body:has(.drawer.open,.modal.modal--visible,dialog[open],localization-form .disclosure__button.open) #ArkLangNudge{visibility:hidden;pointer-events:none}
+@media(max-width:400px){#ArkLangNudge .ark-market-fields{grid-template-columns:1fr;gap:6px}}
 </style><header>ARK OF SWEDEN</header><main><h1>Language and delivery suggestion</h1><label>Preview language <select id="preview-language"></select></label> <button id="open">Show suggestion</button><p id="result" role="status"></p></main><aside id="ArkLangNudge" class="ark-market-card" role="dialog" aria-labelledby="ArkLangNudgeTitle" lang="" data-country="" data-language="" data-countdown="Closes in [s] s" data-stays="Stays open">
   <div class="ark-market-head">
     <h2 id="ArkLangNudgeTitle">Shop in your language</h2>
